@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<ui:composition template="/template/responsiveLayout.xhtml"  
+                xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">   
+    <ui:define name="centerReplace" >
+        <style>
+            .panelGrid tr, .panelGrid td{
+                border:none !important;
+            }
+
+            .ui-panelgrid-cell{
+                text-align: left !important;
+            }
+        </style>
+        <h:body>
+            <script type="text/javascript">
+                function exportChart() {
+                    //export image
+                    $('#output').empty().append(PF('chart').exportAsImage());
+                    //show the dialog
+                    PF('dlg').show();
+                }
+            </script>
+            <h:form id="mainForm"> 
+                <p:messages id="message2" showDetail="true" autoUpdate="true" closable="true" />
+                <p:panel header="Facebook Input Criteria" toggleable="true" >
+                    <p:panelGrid styleClass="panelGrid" columns="2">
+                        <h:outputLabel value="Group ID:"/>
+                        <h:inputText value="#{facebookCrawlingBean.groupId}" size="60" style="width:100%;" required="true" requiredMessage="Group ID is required"/>
+                        <h:outputLabel value="Access Token:"/>
+                        <h:inputText value="#{facebookCrawlingBean.accessToken}"  size="60" style="width:100%;" required="true" requiredMessage="Access Token is required"/>
+                        <h:outputLabel value="since:"/>
+                        <p:calendar id="button1" value="#{facebookCrawlingBean.startDate}" showOn="button" size="12" 
+                                    pattern="dd/MM/yyyy" required="true" requiredMessage="Since is required" />
+                        <h:outputLabel value="until:"/>
+                        <p:calendar id="button2" value="#{facebookCrawlingBean.endDate}" showOn="button" size="12"
+                                    pattern="dd/MM/yyyy" required="true" requiredMessage="Until is required" />
+                    </p:panelGrid>
+                    <p:spacer/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton  value="Generate" icon="ui-icon-refresh" update="requestLink, result, :output" actionListener="#{facebookCrawlingBean.crawlingData}"/>
+                        <p:commandButton  value="Clear" icon="ui-icon-refresh" update="mainForm" actionListener="#{facebookCrawlingBean.clearAll}"/>
+                    </h:panelGrid>
+                    <h:outputLink id="requestLink" value="#{facebookCrawlingBean.requestUrl}" target="_blank">
+                        <h:outputText value="#{facebookCrawlingBean.requestUrl}" style="font-size: smaller"/>
+                    </h:outputLink>
+                </p:panel>
+                <p:panel id="result" header="Chart Result" toggleable="true">
+                    <p:chart id="pieResult" type="pie" model="#{facebookCrawlingBean.pieModel1}"  widgetVar="chart"/>
+                    <p:commandButton type="button" value="Export" icon="ui-icon-extlink" onclick="exportChart();"/>
+                    <h:outputLabel value="#{facebookCrawlingBean.fbGroup.groupName}" style="width:100%;"/>
+                    <h:outputLabel value="#{facebookCrawlingBean.fbGroup.groupDesc}" style="width:100%;"/>
+                    <p:panel id="toggleable" header="Facebook Crawling Result" toggleable="true" toggleSpeed="500" closeSpeed="500" widgetVar="panel" >
+                        <p:dataTable value="#{facebookCrawlingBean.fbGroup.postList}" var="fbpost" >
+                            <p:subTable var="fbcomment" value="#{fbpost.commentList}">
+                                <f:facet name="header">
+                                    <p:outputPanel style="float: left">        
+                                        <h:outputText value="#{fbpost.postMessage}: #{fbpost.updateTime}"/>
+                                    </p:outputPanel>
+                                </f:facet>
+                                <p:column headerText="Comment" style="text-align: left;">
+                                    <h:outputText value="#{fbcomment.commentDetail}" />
+                                </p:column>
+                            </p:subTable>
+                        </p:dataTable>
+                        <h:outputText value="total Likes : #{facebookCrawlingBean.totalLike}, total post : #{facebookCrawlingBean.totalPost}, total snippets : #{facebookCrawlingBean.totalSnippet}"  />
+                    </p:panel>
+                    <p:panel id="toggleable2" header="STC Result" toggleable="true" toggleSpeed="500" closeSpeed="500" widgetVar="panel2" >
+                        <h:outputText value="#{facebookCrawlingBean.stcResult}" escape="false"/>
+                    </p:panel>
+                </p:panel>
+            </h:form>   
+            <p:dialog widgetVar="dlg" showEffect="fade" modal="true" header="Chart as an Image" resizable="false">
+                <p:outputPanel id="output" layout="block" />
+            </p:dialog>
+        </h:body>
+    </ui:define>
+</ui:composition>

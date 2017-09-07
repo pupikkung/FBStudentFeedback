@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition template="/template/responsiveLayout.xhtml"  
+                xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets">   
+    <ui:define name="centerReplace" >
+        <h:body>
+            <h:form id="mainForm"> 
+                <p:messages id="message2" showDetail="true" autoUpdate="true" closable="true" />
+                <p:panel  header="How it works" toggleable="true" >
+                    <h:panelGrid id="mainPng" style="text-align: left !important;">
+                        <h:outputText value="1. Login facebook." />
+                        <h:outputText value="2. Go to facebook group that you want to retrive data."/>
+                        <h:outputText value="3. Copy group id from URL e.g.499083853497753."/>
+                        <h:outputText value="4. Go to GraphAPIExplorer tool belows."/>
+                        <h:outputLink id="requestLink" value="https://developers.facebook.com/tools/explorer/" target="_blank">
+                            <h:outputText value="https://developers.facebook.com/tools/explorer/" style="font-size: smaller"/>
+                        </h:outputLink>
+                        <h:outputText value="5. Register the app and set authentication."/>
+                        <h:outputText value="6. Copy access token and paste to this app."/>
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>   
+        </h:body>
+    </ui:define>
+</ui:composition>
